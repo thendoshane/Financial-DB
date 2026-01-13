@@ -1,0 +1,88 @@
+FINANCE BANK
+
+1. Customers
+key fields:
+- CustomerID (INT | PRIMARY KEY | IDENTITY (1000,1))
+- names (VARCHAR(100) | NOT NULL)
+- email (VARCHAR(100) | NOT NULL | UNIQUE)
+- phone (VARCHAR(100) | NOT NULL | UNIQUE)
+- status (VARCHAR(20) | NOT NULL | DEFAULT "ACTIVE")
+- CHECK (status IN ('ACTIVE','CANCELLED','PENDING'))
+- created date (DATETIME | NOT NULL)
+
+2. AccountTypes
+key fields:
+- AccountTypeID (INT | PRIMARY KEY | IDENTITY (1,1))
+- TypeName (VARCHAR(100) | NOT NULL | UNIQUE)
+- IsCreditAccount (BIT | NOT NULL | DEFAULT 0)
+
+3. Accounts
+key fields:
+- AccountID (INT | PRIMARY KEY | IDENTITY (1,1))
+- CustomerID (INT | FOREIGN KEY)
+- AccountTypeID (INT | FOREIGN KEY)
+- AccountNumber (INT | NOT NULL | UNIQUE)
+- Balance (DECIMAL(20,2) | NOT NULL)
+- Currency (VARCHAR(3))
+
+Relationship: 
+- Accounts -> Customers
+- Accounts -> AccountTypes
+
+4. Merchants
+key fields:
+- MerchantID (INT | PRIMARY KEY | IDENTITY (100,1))
+- MerchantName (VARCHAR(100) | NOT NULL )
+- MerchantType (VARCHAR(100) | NOT NULL )
+
+5. Categories
+key fields:
+- CategoryID (INT | PRIMARY KEY | IDENTITY (1,2))
+- CategoryName (VARCHAR(100) | NOT NULL | UNIQUE)
+- ParentCategoryID (optional) (INT)
+
+6. Transactions
+key fields:
+- TransactionID (INT | PRIMARY KEY | IDENTITY (1000,1))
+- AccountID (INT | FOREIGN KEY)
+- type (VARCHAR(100) | NOT NULL )
+- Direction (debit/credit)
+- Amount (DECIMAL(20,2) | NOT NULL)
+- Currency (VARCHAR(3) | NOT NULL)
+- MerchantID (optional) (INT | FOREIGN KEY)
+- CategoryID (optional) (INT | FOREIGN KEY)
+- Reference (VARCHAR(100) | NOT NULL | UNIQUE)
+- CreatedAt (DATETIME)
+- Status (VARCHAR(20) | NOT NULL | DEFAULT "SUCCESS")
+- CHECK (status IN ('SUCCESS','DECLINED','PENDING'))
+
+Relationships:
+- Accounts -> Transactions 
+
+7. Transfers
+key fields:
+- TransferID (INT | PRIMARY KEY | IDENTITY (1000,1))
+- fromAccountId (INT | FOREIGN KEY)
+- toAccountId (INT | FOREIGN KEY)
+- Amount (DECIMAL(20,2) | NOT NULL)
+- Currency (VARCHAR(3) | NOT NULL)
+- InitiatedAt (VARCHAR(100) | NOT NULL )
+- Status (VARCHAR(20) | NOT NULL | DEFAULT "SUCCESS")
+- CHECK (status IN ('SUCCESS','DECLINED','PENDING'))
+- DebitTransactionID (INT | FOREIGN KEY)
+- CreditTransactionID (INT | FOREIGN KEY)
+- FailureReason (optional) (VARCHAR(100))
+
+Relationships:
+- Accounts -> Transfers
+- Transfers -> Transactions
+
+8. AuditLogs
+key fields:
+- AuditID (INT | PRIMARY KEY | IDENTITY (1,1))
+- EntityName (VARCHAR(100))
+- EntityID (INT | FOREIGN KEY)
+- Action (VARCHAR(100))
+- ChangedBy (VARCHAR(100))
+- ChangedAt (VARCHAR(100))
+- Details (VARCHAR(250))
